@@ -5,7 +5,7 @@ Getting added to gitsecret:
 
 
 To run from terminal:
-run from terminal "./gradlew build runCucumber -Denv=dev"
+"./gradlew build runCucumber -Denv=dev"
 
 To run a single feature, right click it and click run ( you will need EnvFile plugin for intellij enabled with defualt env file )
 
