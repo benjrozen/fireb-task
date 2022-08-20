@@ -1,0 +1,78 @@
+buildscript {
+    ext {
+        project.ext.set('props', new Properties())
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+
+group 'fireb'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+static def getDate() {
+    return new Date().format('ddMMyyyy--HH-mm-ss')
+}
+
+dependencies {
+    testImplementation 'io.cucumber:cucumber-java:7.5.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.5.0'
+    testImplementation 'io.cucumber:cucumber-core:7.5.0'
+    testImplementation 'io.cucumber:cucumber-plugin:7.5.0'
+    testImplementation group: 'junit', name: 'junit', version: '4.13'
+    testImplementation 'io.rest-assured:rest-assured:5.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.3'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+def propertiesSetter(String env) {
+    project.props = new Properties()
+    switch (env) {
+        case 'dev':
+            file('dev.env')
+                    .withInputStream { project.props.load(it) }
+            break
+        default:
+            file('dev.env')
+                    .withInputStream { project.props.load(it) }
+            break
+    }
+}
+
+task runCucumber(type: JavaExec) {
+    String env  = java.util.Optional.ofNullable(System.getProperty('env')).orElse("dev")
+    propertiesSetter(env)
+    systemProperties project.props
+    systemProperty 'env', System.properties['env'] ?: env
+    doFirst {
+        println('Running sandbox sanity flow on: ' + env)
+    }
+    main = 'io.cucumber.core.cli.Main'
+    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+    args = [
+            '--plugin', 'pretty',
+            '--plugin', 'junit:target/cucumber-report/results' + getDate() + '.xml',
+            '--glue', 'fireb',
+            'src/test/resources'
+    ]
+}

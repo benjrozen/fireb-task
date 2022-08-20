@@ -1,0 +1,14 @@
+.project
+.classpath
+bin/
+build/
+target/
+.gradle/
+.settings/
+gradle
+.idea
+.DS_Store
+.gitsecret/keys/random_seed
+!*.secret
+/dev.env
+/target/cucumber-report/
