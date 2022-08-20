@@ -1,5 +1,7 @@
 # Users-Transactions API sandbox Test Plan
 
+docs: https://docs.google.com/spreadsheets/d/1jB6xFPsovW44jkBhP0b28eRvCk75NhN3sOuTwZvvAdE/edit#gid=0
+
 
 ## Endpoints:
 
